@@ -1,0 +1,17 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/magbi/Desktop/Parallel_inference_foundations/aalto/output/Pre0'
+relocations:
+  - { offset: 0x247E, size: 0x8, addend: 0x0, symName: __ZStL8__ioinit, symObjAddr: 0xF779, symBinAddr: 0x10000800C, symSize: 0x0 }
+  - { offset: 0x24B7, size: 0x8, addend: 0x0, symName: __ZL2nx, symObjAddr: 0x400, symBinAddr: 0x100000B38, symSize: 0x0 }
+  - { offset: 0x24CD, size: 0x8, addend: 0x0, symName: __ZL2ny, symObjAddr: 0x404, symBinAddr: 0x100000B3C, symSize: 0x0 }
+  - { offset: 0x24F4, size: 0x8, addend: 0x0, symName: __ZL5image, symObjAddr: 0x408, symBinAddr: 0x100000B40, symSize: 0x0 }
+  - { offset: 0x250A, size: 0x8, addend: 0x0, symName: _y0, symObjAddr: 0xF77C, symBinAddr: 0x100008010, symSize: 0x0 }
+  - { offset: 0x2520, size: 0x8, addend: 0x0, symName: _x0, symObjAddr: 0x498, symBinAddr: 0x100008000, symSize: 0x0 }
+  - { offset: 0x2536, size: 0x8, addend: 0x0, symName: _y1, symObjAddr: 0x49C, symBinAddr: 0x100008004, symSize: 0x0 }
+  - { offset: 0x254C, size: 0x8, addend: 0x0, symName: _x1, symObjAddr: 0x4A0, symBinAddr: 0x100008008, symSize: 0x0 }
+  - { offset: 0x2651, size: 0x8, addend: 0x0, symName: __GLOBAL__sub_I_Pre0.cpp, symObjAddr: 0x4E8, symBinAddr: 0x100000AE4, symSize: 0x14 }
+  - { offset: 0x2668, size: 0x8, addend: 0x0, symName: __Z41__static_initialization_and_destruction_0v, symObjAddr: 0x4AC, symBinAddr: 0x100000AA8, symSize: 0x3C }
+  - { offset: 0x2686, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x218, symBinAddr: 0x1000008C0, symSize: 0x1E8 }
+  - { offset: 0x26D6, size: 0x8, addend: 0x0, symName: __Z9calculateiiPKfiiii, symObjAddr: 0x0, symBinAddr: 0x1000006A8, symSize: 0x218 }
+...
