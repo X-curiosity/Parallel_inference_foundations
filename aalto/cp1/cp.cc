@@ -29,87 +29,6 @@ This is the function you need to implement. Quick reference:
 
 
 
-/*
-
-
-// TEST 1 
-
-
-int ny = 2;
-int nx = 2;
-
-const float data[] = {
-    // row 0
-    -1.00000000f, +1.00000000f,
-
-    // row 1
-    -1.00000000f, +1.00000000f
-};
-
-float result[] = {0.0f,0.0f,0.0f,0.0f};
-
-
-
-
-const float expected[] = {
-    1.00000000f,  // correlation(0,0)
-    1.00000000f,  // correlation(1,0)
-    0.00000000f,  // not required: correlation(0,1)
-    1.00000000f   // correlation(1,1)
-};
-
-*/
-
-
-
-
-/*
-
-
-
-// TEST 2
-
-int ny = 2;
-int nx = 3;
-
-float data[] = {
-    // row 0
-    1, 0, 1,
-
-    // row 1
-    0, 1, 1
-};
-
-float result[4] = {0.0,0.0,0.0,0.0};
-
-
-
-EXPECTED RESULT : 
-{ 2, 1,
-  0, 2 }
-
-*/
-
-
-/*
-
-
-// TEST 3 
-
-int ny = 2;
-int nx = 2;
-
-float data[] = {
-    // row 0
-    0.81472367f , 0.90579194f,
-
-    // row 1
-    0.45150527f, +0.49610928f
-};
-
-float result[4] = {0.0f,0.0f,0.0f,0.0f};
-
-*/
 #include <cmath>
 #include <vector>
 
@@ -158,27 +77,6 @@ void correlate(int ny, int nx, const float *data, float *result)
     }
 }
 
-/*
-
-
-int main(){
-
-    correlate(ny,nx,data,result);
-
-    for(int y = 0 ; y < ny;y++){
-        for(int k = 0 ; k < ny;k++){
-            std::cout << result[k + (y)*ny] << " ";
-
-        }
-
-
-    }
-
-
-
-}
-
-*/
 
 
 
