@@ -16,9 +16,6 @@
 
 #include <iostream>
 
-
-
-
 struct Result {
     float avg[3];
 };
