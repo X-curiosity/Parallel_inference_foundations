@@ -1,0 +1,121 @@
+#!/usr/bin/env sh
+set -eu
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$script_dir"
+
+if [ "$(uname -s)" != "Darwin" ] || [ ! -x /usr/bin/powermetrics ]; then
+    echo "This command requires macOS and /usr/bin/powermetrics." >&2
+    exit 1
+fi
+
+echo "Physical CPU cores: $(sysctl -n hw.physicalcpu)"
+echo "Logical CPU cores:  $(sysctl -n hw.logicalcpu)"
+echo "CPU:                $(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo 'Apple Silicon')"
+echo
+
+run_privileged()
+{
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+    else
+        sudo "$@"
+    fi
+}
+
+if [ "$(id -u)" -ne 0 ]; then
+    if [ ! -r /dev/tty ]; then
+        echo "Power sampling requires an interactive Terminal window." >&2
+        echo "Open Terminal, enter this directory, and run:" >&2
+        echo "  ./grading_test_benchmarks_power" >&2
+        exit 1
+    fi
+
+    echo "macOS requires your administrator password for powermetrics."
+    echo "The password is requested by sudo and is never read or stored by this script."
+    if ! sudo -v </dev/tty; then
+        echo "Authorization failed. Normal timing/core/FLOP metrics remain available with:" >&2
+        echo "  ./grading_test_benchmarks" >&2
+        exit 1
+    fi
+fi
+
+sampler_pid=""
+samples=""
+
+cleanup()
+{
+    if [ -n "$sampler_pid" ]; then
+        run_privileged kill -INT "$sampler_pid" 2>/dev/null || true
+        wait "$sampler_pid" 2>/dev/null || true
+    fi
+    if [ -n "$samples" ]; then
+        rm -f "$samples"
+    fi
+}
+
+trap cleanup EXIT INT TERM
+
+./grading compile
+
+for number in 1 2 3 4 5 6 7 8 9 10; do
+    benchmark="benchmarks/benchmark_${number}.txt"
+    samples=$(mktemp -t cpu-benchmark-power)
+
+    echo
+    echo "=== ${benchmark} ==="
+    if [ "$(id -u)" -eq 0 ]; then
+        /usr/bin/powermetrics \
+            --samplers cpu_power \
+            --sample-rate 250 \
+            --poweravg 1 \
+            --buffer-size 1 \
+            --output-file "$samples" &
+    else
+        sudo /usr/bin/powermetrics \
+            --samplers cpu_power \
+            --sample-rate 250 \
+            --poweravg 1 \
+            --buffer-size 1 \
+            --output-file "$samples" &
+    fi
+    sampler_pid=$!
+
+    ./freeform "$benchmark"
+
+    run_privileged kill -INT "$sampler_pid" 2>/dev/null || true
+    wait "$sampler_pid" 2>/dev/null || true
+    sampler_pid=""
+
+    awk '
+        /CPU Power:/ {
+            for (i = 1; i <= NF; i++) {
+                if ($(i + 1) == "mW") {
+                    power_sum += $i;
+                    power_count++;
+                }
+            }
+        }
+        /HW active frequency:/ {
+            for (i = 1; i <= NF; i++) {
+                if ($(i + 1) == "MHz") {
+                    frequency_sum += $i;
+                    frequency_count++;
+                }
+            }
+        }
+        END {
+            if (power_count)
+                printf "Measured average CPU power: %.3f W (%d samples)\n", power_sum / power_count / 1000.0, power_count;
+            else
+                print "CPU power was not exposed by powermetrics on this machine.";
+            if (frequency_count)
+                printf "Sampled average active frequency: %.1f MHz (%d cluster samples)\n", frequency_sum / frequency_count, frequency_count;
+            else
+                print "Active frequency was not exposed in MHz by powermetrics on this machine.";
+        }
+    ' "$samples"
+
+    rm -f "$samples"
+    samples=""
+done

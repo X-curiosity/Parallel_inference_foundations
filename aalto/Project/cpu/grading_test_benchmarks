@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+set -e
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$script_dir"
+exec ./grading benchmark \
+    benchmarks/benchmark_1.txt \
+    benchmarks/benchmark_2.txt \
+    benchmarks/benchmark_3.txt \
+    benchmarks/benchmark_4.txt \
+    benchmarks/benchmark_5.txt \
+    benchmarks/benchmark_6.txt \
+    benchmarks/benchmark_7.txt \
+    benchmarks/benchmark_8.txt \
+    benchmarks/benchmark_9.txt \
+    benchmarks/benchmark_10.txt
